@@ -30,7 +30,9 @@ RUN docker-php-ext-install \
     	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
         && docker-php-ext-install gd \
         && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
-	&& docker-php-ext-install ldap
+	&& docker-php-ext-install ldap \
+  && pecl install mongodb \
+  && docker-php-ext-enable mongodb
 
 # NodeJS
 RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \

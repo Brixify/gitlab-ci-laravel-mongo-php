@@ -37,7 +37,9 @@ RUN docker-php-ext-install \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    && docker-php-ext-install imap
+    && docker-php-ext-install imap \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb
 
 # NodeJS
 RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
