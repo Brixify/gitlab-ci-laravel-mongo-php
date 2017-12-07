@@ -1,5 +1,7 @@
 FROM php:7.1
-MAINTAINER Krzysztof Kawalec <kf.kawalec@gmail.com>
+LABEL maintainer="kf.kawalec@gmail.com"
+LABEL maintainer="bence.gazder@brixify.com"
+
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         openssh-client \
