@@ -1,4 +1,4 @@
-FROM php:7.1
+FROM php:7.1-apache
 LABEL maintainer="kf.kawalec@gmail.com"
 LABEL maintainer="bence.gazder@brixify.com"
 
@@ -21,7 +21,6 @@ RUN apt-get update && \
         libkrb5-dev \
         curl \
         libtidy* \
-	apache2 \
         git \
     && apt-get clean \
     && rm -r /var/lib/apt/lists/* && \
