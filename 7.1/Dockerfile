@@ -2,6 +2,11 @@ FROM php:7.1
 LABEL maintainer="kf.kawalec@gmail.com"
 LABEL maintainer="bence.gazder@brixify.com"
 
+VOLUME /root/composer
+
+# Environmental Variables
+ENV COMPOSER_HOME /root/composer
+
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         openssh-client \
@@ -16,12 +21,12 @@ RUN apt-get update && \
         libkrb5-dev \
         curl \
         libtidy* \
+	apache2 \
         git \
     && apt-get clean \
-    && rm -r /var/lib/apt/lists/*
-
+    && rm -r /var/lib/apt/lists/* && \
 # PHP Extensions
-RUN docker-php-ext-install \
+    docker-php-ext-install \
         mcrypt \
         mbstring \
         curl \
@@ -39,40 +44,17 @@ RUN docker-php-ext-install \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap \
     && pecl install mongodb \
-    && docker-php-ext-enable mongodb
-
+    && docker-php-ext-enable mongodb && \
 # NodeJS
-RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get clean
-  
+    curl -sL https://deb.nodesource.com/setup_9.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
 # Memory Limit
-RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
-
+    echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini && \
 # Time Zone
-RUN echo "date.timezone=Europe/Warsaw" > $PHP_INI_DIR/conf.d/date_timezone.ini
-
-VOLUME /root/composer
-
-# Environmental Variables
-ENV COMPOSER_HOME /root/composer
-
+    echo "date.timezone=Europe/Warsaw" > $PHP_INI_DIR/conf.d/date_timezone.ini && \
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-	composer selfupdate
-    
-# Goto temporary directory.
-WORKDIR /tmp
-
-# Run composer and phpunit installation.
-RUN composer require "phpunit/phpunit=5.*" --prefer-source --no-interaction && \
-    ln -s /tmp/vendor/bin/phpunit /usr/local/bin/phpunit
-
-# Run composer and codesniffer installation.
-RUN composer require "squizlabs/php_codesniffer=*" --prefer-source --no-interaction && \
-    ln -s /tmp/vendor/bin/phpcs /usr/local/bin/phpcs
-
-RUN php --version
-RUN composer --version
-RUN phpunit --version
-RUN phpcs --version
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+	composer selfupdate && \
+# Versions
+   php --version && composer --version
